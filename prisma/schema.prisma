@@ -1,0 +1,162 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String         @id @default(uuid())
+  role            Role           @default(USER)
+  email           String         @unique @db.VarChar
+  name            String         @db.VarChar
+  password        String         @db.VarChar
+  profile_picture String?        @db.VarChar
+  forums          Forum[]
+  forumLikes      ForumLike[]
+  forumComments   ForumComment[]
+  articles        Article[]
+  articleLikes    ArticleLike[]
+  otp             String?        @db.VarChar
+  otpExpiry       DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@map("t_user")
+}
+
+model Member {
+  id          String    @id @default(uuid())
+  division_id String?
+  division    Division? @relation(fields: [division_id], references: [id])
+  name        String    @db.VarChar
+  photo       String?   @db.VarChar
+  position    String    @db.VarChar
+
+  @@map("t_member")
+}
+
+model Division {
+  id            String      @id @default(uuid())
+  department_id String?
+  department    Department? @relation(fields: [department_id], references: [id])
+  division      String      @db.VarChar
+  members       Member[]
+
+  @@map("t_division")
+}
+
+model Department {
+  id         String     @id @default(uuid())
+  department String     @db.VarChar
+  divisions  Division[]
+
+  @@map("t_department")
+}
+
+model Event {
+  id      String    @id @default(uuid())
+  name    String    @db.VarChar
+  gallery Gallery[]
+
+  @@map("t_event")
+}
+
+model Gallery {
+  id        String @id @default(uuid())
+  event_id  String
+  event     Event  @relation(fields: [event_id], references: [id])
+  photo_url String @db.VarChar
+
+  @@map("t_gallery")
+}
+
+enum ForumStatus {
+  DRAFT
+  PUBLISHED
+  REJECTED
+}
+
+model Forum {
+  id         String         @id @default(uuid())
+  title      String         @db.VarChar
+  thumbnail  String         @db.VarChar
+  author_id  String
+  author     User           @relation(fields: [author_id], references: [id])
+  content    String         @db.VarChar
+  created_at DateTime       @default(now())
+  status     ForumStatus    @default(DRAFT)
+  likes      ForumLike[]
+  comments   ForumComment[]
+
+  @@map("t_forum")
+}
+
+model ForumLike {
+  id       String @id @default(uuid())
+  forum_id String
+  forum    Forum  @relation(fields: [forum_id], references: [id])
+  user_id  String
+  user     User   @relation(fields: [user_id], references: [id])
+
+  @@unique([forum_id, user_id])
+  @@map("t_forum_like")
+}
+
+model ForumComment {
+  id       String @id @default(uuid())
+  forum_id String
+  forum    Forum  @relation(fields: [forum_id], references: [id])
+  user_id  String
+  user     User   @relation(fields: [user_id], references: [id])
+  comments String @db.VarChar
+
+  @@map("t_forum_comment")
+}
+
+model Article {
+  id         String        @id @default(uuid())
+  title      String        @db.VarChar
+  content    String        @db.VarChar
+  thumbnail  String        @db.VarChar
+  author     String        @db.VarChar
+  created_at DateTime      @default(now())
+  author_id  String
+  user       User          @relation(fields: [author_id], references: [id])
+  likes      ArticleLike[]
+
+  @@map("t_article")
+}
+
+model ArticleLike {
+  id         String  @id @default(uuid())
+  article_id String
+  article    Article @relation(fields: [article_id], references: [id])
+  user_id    String
+  user       User    @relation(fields: [user_id], references: [id])
+
+  @@unique([article_id, user_id])
+  @@map("t_article_like")
+}
+
+model BankData {
+  id    String @id @default(uuid())
+  title String @db.VarChar
+  link  String @db.VarChar
+
+  @@map("t_bank_data")
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
