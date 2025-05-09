@@ -33,13 +33,20 @@ model User {
   @@map("t_user")
 }
 
+enum MemberRole {
+  LEAD
+  SECRETARY
+  STAFF
+}
+
 model Member {
-  id          String    @id @default(uuid())
+  id          String     @id @default(uuid())
   division_id String?
-  division    Division? @relation(fields: [division_id], references: [id])
-  name        String    @db.VarChar
-  photo       String?   @db.VarChar
-  position    String    @db.VarChar
+  division    Division?  @relation(fields: [division_id], references: [id])
+  name        String     @db.VarChar
+  photo       String?    @db.VarChar
+  position    String     @db.VarChar
+  role        MemberRole @default(STAFF)
 
   @@map("t_member")
 }
@@ -49,14 +56,17 @@ model Division {
   department_id String?
   department    Department? @relation(fields: [department_id], references: [id])
   division      String      @db.VarChar
+  slug          String?     @db.VarChar
   members       Member[]
 
+  @@unique([division, department_id], name: "division_department_id")
   @@map("t_division")
 }
 
 model Department {
   id         String     @id @default(uuid())
   department String     @db.VarChar
+  slug       String?    @db.VarChar
   divisions  Division[]
 
   @@map("t_department")
@@ -112,12 +122,13 @@ model ForumLike {
 }
 
 model ForumComment {
-  id       String @id @default(uuid())
-  forum_id String
-  forum    Forum  @relation(fields: [forum_id], references: [id])
-  user_id  String
-  user     User   @relation(fields: [user_id], references: [id])
-  comments String @db.VarChar
+  id         String   @id @default(uuid())
+  forum_id   String
+  forum      Forum    @relation(fields: [forum_id], references: [id])
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id])
+  comments   String   @db.VarChar
+  created_at DateTime @default(now())
 
   @@map("t_forum_comment")
 }

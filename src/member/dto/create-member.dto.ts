@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+
+enum MemberRole {
+  LEAD = 'LEAD',
+  SECRETARY = 'SECRETARY',
+  STAFF = 'STAFF',
+}
 
 export class CreateMemberDto {
   @IsString()
@@ -16,4 +22,8 @@ export class CreateMemberDto {
   @IsString()
   @IsOptional()
   photo?: string;
+  
+  @IsEnum(MemberRole)
+  @IsOptional()
+  role?: MemberRole;
 } 

@@ -2,36 +2,85 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateDivisionDto } from './dto/create-division.dto';
 import { UpdateDivisionDto } from './dto/update-division.dto';
+import { PaginationService } from '../common/services/pagination.service';
+import { PaginationQueryDto } from '../common/dto/pagination.dto';
+import { PaginatedResponse } from '../common/interfaces/paginated-response.interface';
 
 @Injectable()
 export class DivisionService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly paginationService: PaginationService,
+  ) {}
+
+  /**
+   * Creates a slug from a division name
+   * @param name Division name
+   * @returns Slug
+   */
+  private createSlug(name: string): string {
+    return name
+      .toLowerCase()
+      .replace(/\s+/g, '-')     // Replace spaces with -
+      .replace(/[^\w\-]+/g, '') // Remove all non-word chars
+      .replace(/\-\-+/g, '-')   // Replace multiple - with single -
+      .replace(/^-+/, '')       // Trim - from start of text
+      .replace(/-+$/, '');      // Trim - from end of text
+  }
 
   async create(dto: CreateDivisionDto) {
+    const slug = this.createSlug(dto.division);
+    
     return this.prisma.division.create({
       data: {
         division: dto.division,
         department_id: dto.department_id,
+        slug,
       },
       include: {
         department: true,
-        members: true,
       },
     });
   }
 
-  async findAll() {
-    return this.prisma.division.findMany({
-      include: {
-        department: true,
-        members: true,
-      },
-    });
+  async findAll(paginationQuery: PaginationQueryDto): Promise<PaginatedResponse<any>> {
+    const skip = this.paginationService.getPrismaSkip(paginationQuery);
+    const take = this.paginationService.getPrismaLimit(paginationQuery);
+
+    const [items, totalItems] = await Promise.all([
+      this.prisma.division.findMany({
+        skip,
+        take,
+        include: {
+          department: true,
+          members: true,
+        },
+      }),
+      this.prisma.division.count(),
+    ]);
+
+    return this.paginationService.createPaginationObject(items, totalItems, paginationQuery);
   }
 
   async findOne(id: string) {
     const division = await this.prisma.division.findUnique({
       where: { id },
+      include: {
+        department: true,
+        members: true,
+      },
+    });
+
+    if (!division) {
+      throw new NotFoundException('Division not found');
+    }
+
+    return division;
+  }
+
+  async findBySlug(slug: string) {
+    const division = await this.prisma.division.findFirst({
+      where: { slug },
       include: {
         department: true,
         members: true,
@@ -54,12 +103,22 @@ export class DivisionService {
       throw new NotFoundException('Division not found');
     }
 
+    // Prepare data with possible slug update
+    const data: any = {};
+    
+    // If division name is changing, update the slug too
+    if (dto.division) {
+      data.division = dto.division;
+      data.slug = this.createSlug(dto.division);
+    }
+    
+    if (dto.department_id) {
+      data.department_id = dto.department_id;
+    }
+
     return this.prisma.division.update({
       where: { id },
-      data: {
-        division: dto.division,
-        department_id: dto.department_id,
-      },
+      data,
       include: {
         department: true,
         members: true,

@@ -19,6 +19,8 @@ import { ArticleModule } from './article/article.module';
 import { BankDataModule } from './bank-data/bank-data.module';
 import { AdminModule } from './admin/admin.module';
 import { MailModule } from './mail/mail.module';
+import { CommonModule } from './common/common.module';
+import { UploadModule } from './upload/upload.module';
 import { AuthMiddleware } from './auth/middleware/auth.middleware';
 
 @Module({
@@ -36,6 +38,8 @@ import { AuthMiddleware } from './auth/middleware/auth.middleware';
     BankDataModule,
     AdminModule,
     MailModule,
+    CommonModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

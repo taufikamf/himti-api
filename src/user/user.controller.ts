@@ -7,6 +7,7 @@ import {
   Delete,
   UseGuards,
   UnauthorizedException,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -14,16 +15,23 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '@prisma/client';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { PaginationQueryDto } from '../common/dto/pagination.dto';
+import { PaginationService } from '../common/services/pagination.service';
 
 @Controller('users')
 @UseGuards(RolesGuard)
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly paginationService: PaginationService,
+  ) {}
 
   @Get()
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  findAll() {
-    return this.userService.findAll();
+  async findAll(@Query() paginationQuery: PaginationQueryDto) {
+    // For safe pagination without modifying the service method that might be called by other code
+    const users = await this.userService.findAll(paginationQuery);
+    return users;
   }
 
   @Get('me')

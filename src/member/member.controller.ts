@@ -7,43 +7,58 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { MemberService } from './member.service';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '@prisma/client';
+import { PaginationQueryDto } from '../common/dto/pagination.dto';
+import { PaginationService } from '../common/services/pagination.service';
+import { Public } from '../auth/decorators/public.decorator';
+import { PublicGuard } from '../auth/guards/public.guard';
 
 @Controller('members')
-@UseGuards(JwtAuthGuard, RolesGuard)
 export class MemberController {
-  constructor(private readonly memberService: MemberService) {}
+  constructor(
+    private readonly memberService: MemberService,
+    private readonly paginationService: PaginationService,
+  ) {}
 
   @Post()
+  @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   create(@Body() createMemberDto: CreateMemberDto) {
     return this.memberService.create(createMemberDto);
   }
 
+  @Public()
+  @UseGuards(PublicGuard)
   @Get()
-  findAll() {
-    return this.memberService.findAll();
+  async findAll(@Query() paginationQuery: PaginationQueryDto) {
+    // For safe pagination without modifying the service method that might be called by other code
+    const members = await this.memberService.findAll(paginationQuery);
+    return members;
   }
 
+  @Public()
+  @UseGuards(PublicGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.memberService.findOne(id);
   }
 
   @Patch(':id')
+  @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   update(@Param('id') id: string, @Body() updateMemberDto: UpdateMemberDto) {
     return this.memberService.update(id, updateMemberDto);
   }
 
   @Delete(':id')
+  @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   remove(@Param('id') id: string) {
     return this.memberService.remove(id);

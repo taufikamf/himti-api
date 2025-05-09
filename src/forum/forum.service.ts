@@ -1,12 +1,22 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateForumDto } from './dto/create-forum.dto';
 import { UpdateForumDto } from './dto/update-forum.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { ForumStatus } from '@prisma/client';
+import { PaginationService } from '../common/services/pagination.service';
+import { PaginationQueryDto } from '../common/dto/pagination.dto';
+import { PaginatedResponse } from '../common/interfaces/paginated-response.interface';
 
 @Injectable()
 export class ForumService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private paginationService: PaginationService,
+  ) {}
 
   async create(createForumDto: CreateForumDto, userId: string) {
     return this.prisma.forum.create({
@@ -27,61 +37,134 @@ export class ForumService {
     });
   }
 
-  async findAll(status?: ForumStatus) {
-    return this.prisma.forum.findMany({
-      where: {
-        status: status || ForumStatus.PUBLISHED,
-      },
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            profile_picture: true,
-          },
+  async findAll(
+    paginationQuery: PaginationQueryDto,
+    status?: ForumStatus,
+    userId?: string,
+  ): Promise<PaginatedResponse<any>> {
+    const skip = this.paginationService.getPrismaSkip(paginationQuery);
+    const take = this.paginationService.getPrismaLimit(paginationQuery);
+
+    const [items, totalItems] = await Promise.all([
+      this.prisma.forum.findMany({
+        where: {
+          status: status || ForumStatus.PUBLISHED,
         },
-        _count: {
-          select: {
-            likes: true,
-            comments: true,
+        skip,
+        take,
+        include: {
+          author: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              profile_picture: true,
+            },
           },
+          _count: {
+            select: {
+              likes: true,
+              comments: true,
+            },
+          },
+          ...(userId
+            ? {
+                likes: {
+                  where: {
+                    user_id: userId,
+                  },
+                },
+              }
+            : {}),
         },
-      },
-      orderBy: {
-        created_at: 'desc',
-      },
-    });
+        orderBy: {
+          created_at: 'desc',
+        },
+      }),
+      this.prisma.forum.count({
+        where: {
+          status: status || ForumStatus.PUBLISHED,
+        },
+      }),
+    ]);
+
+    // Add is_liked field to each forum
+    const enrichedItems = items.map((forum) => ({
+      ...forum,
+      is_liked: userId ? forum.likes?.length > 0 : false,
+      // Remove the likes array as it was only used to determine if_liked
+      likes: undefined,
+    }));
+
+    return this.paginationService.createPaginationObject(
+      enrichedItems,
+      totalItems,
+      paginationQuery,
+    );
   }
 
-  async findMyForums(userId: string) {
-    return this.prisma.forum.findMany({
-      where: {
-        author_id: userId,
-      },
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            profile_picture: true,
+  async findMyForums(
+    userId: string,
+    paginationQuery: PaginationQueryDto,
+  ): Promise<PaginatedResponse<any>> {
+    const skip = this.paginationService.getPrismaSkip(paginationQuery);
+    const take = this.paginationService.getPrismaLimit(paginationQuery);
+
+    const [items, totalItems] = await Promise.all([
+      this.prisma.forum.findMany({
+        where: {
+          author_id: userId,
+        },
+        skip,
+        take,
+        include: {
+          author: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              profile_picture: true,
+            },
+          },
+          _count: {
+            select: {
+              likes: true,
+              comments: true,
+            },
+          },
+          likes: {
+            where: {
+              user_id: userId,
+            },
           },
         },
-        _count: {
-          select: {
-            likes: true,
-            comments: true,
-          },
+        orderBy: {
+          created_at: 'desc',
         },
-      },
-      orderBy: {
-        created_at: 'desc',
-      },
-    });
+      }),
+      this.prisma.forum.count({
+        where: {
+          author_id: userId,
+        },
+      }),
+    ]);
+
+    // Add is_liked field to each forum
+    const enrichedItems = items.map((forum) => ({
+      ...forum,
+      is_liked: forum.likes?.length > 0,
+      // Remove the likes array as it was only used to determine if_liked
+      likes: undefined,
+    }));
+
+    return this.paginationService.createPaginationObject(
+      enrichedItems,
+      totalItems,
+      paginationQuery,
+    );
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, userId?: string) {
     const forum = await this.prisma.forum.findUnique({
       where: { id },
       include: {
@@ -104,6 +187,9 @@ export class ForumService {
               },
             },
           },
+          orderBy: {
+            created_at: 'desc',
+          },
         },
         _count: {
           select: {
@@ -111,6 +197,15 @@ export class ForumService {
             comments: true,
           },
         },
+        ...(userId
+          ? {
+              likes: {
+                where: {
+                  user_id: userId,
+                },
+              },
+            }
+          : {}),
       },
     });
 
@@ -122,7 +217,15 @@ export class ForumService {
       throw new NotFoundException('Forum not found or not published');
     }
 
-    return forum;
+    // Add is_liked field
+    const result = {
+      ...forum,
+      is_liked: userId ? forum.likes?.length > 0 : false,
+      // Remove the likes array as it was only used to determine if_liked
+      likes: undefined,
+    };
+
+    return result;
   }
 
   async update(id: string, updateForumDto: UpdateForumDto, userId: string) {
@@ -276,4 +379,4 @@ export class ForumService {
       },
     });
   }
-} 
+}

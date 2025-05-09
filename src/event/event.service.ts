@@ -2,10 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { PaginationService } from '../common/services/pagination.service';
+import { PaginationQueryDto } from '../common/dto/pagination.dto';
+import { PaginatedResponse } from '../common/interfaces/paginated-response.interface';
 
 @Injectable()
 export class EventService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly paginationService: PaginationService,
+  ) {}
 
   async create(dto: CreateEventDto) {
     return this.prisma.event.create({
@@ -18,12 +24,22 @@ export class EventService {
     });
   }
 
-  async findAll() {
-    return this.prisma.event.findMany({
+  async findAll(paginationQuery: PaginationQueryDto): Promise<PaginatedResponse<any>> {
+    const skip = this.paginationService.getPrismaSkip(paginationQuery);
+    const take = this.paginationService.getPrismaLimit(paginationQuery);
+
+    const [items, totalItems] = await Promise.all([
+      this.prisma.event.findMany({
+        skip,
+        take,
       include: {
         gallery: true,
       },
-    });
+      }),
+      this.prisma.event.count(),
+    ]);
+
+    return this.paginationService.createPaginationObject(items, totalItems, paginationQuery);
   }
 
   async findOne(id: string) {

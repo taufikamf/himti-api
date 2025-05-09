@@ -22,4 +22,4 @@ import { AuthMiddleware } from './middleware/auth.middleware';
   providers: [AuthService, JwtStrategy, AuthMiddleware],
   exports: [AuthService, JwtModule, AuthMiddleware],
 })
-export class AuthModule {} 
+export class AuthModule {}
