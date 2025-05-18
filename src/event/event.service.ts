@@ -5,13 +5,18 @@ import { UpdateEventDto } from './dto/update-event.dto';
 import { PaginationService } from '../common/services/pagination.service';
 import { PaginationQueryDto } from '../common/dto/pagination.dto';
 import { PaginatedResponse } from '../common/interfaces/paginated-response.interface';
+import { SoftDeleteService } from '../common/services/soft-delete.service';
 
 @Injectable()
-export class EventService {
+export class EventService extends SoftDeleteService<any> {
+  protected model = 'event';
+
   constructor(
-    private readonly prisma: PrismaService,
-    private readonly paginationService: PaginationService,
-  ) {}
+    protected readonly prisma: PrismaService,
+    protected readonly paginationService: PaginationService,
+  ) {
+    super(prisma, paginationService);
+  }
 
   async create(dto: CreateEventDto) {
     return this.prisma.event.create({
@@ -32,11 +37,22 @@ export class EventService {
       this.prisma.event.findMany({
         skip,
         take,
-      include: {
-        gallery: true,
-      },
+        where: {
+          deletedAt: null,
+        },
+        include: {
+          gallery: {
+            where: {
+              deletedAt: null,
+            },
+          },
+        },
       }),
-      this.prisma.event.count(),
+      this.prisma.event.count({
+        where: {
+          deletedAt: null,
+        },
+      }),
     ]);
 
     return this.paginationService.createPaginationObject(items, totalItems, paginationQuery);
@@ -44,9 +60,16 @@ export class EventService {
 
   async findOne(id: string) {
     const event = await this.prisma.event.findUnique({
-      where: { id },
+      where: { 
+        id,
+        deletedAt: null,
+      },
       include: {
-        gallery: true,
+        gallery: {
+          where: {
+            deletedAt: null,
+          },
+        },
       },
     });
 
@@ -59,7 +82,10 @@ export class EventService {
 
   async update(id: string, dto: UpdateEventDto) {
     const event = await this.prisma.event.findUnique({
-      where: { id },
+      where: { 
+        id,
+        deletedAt: null,
+      },
     });
 
     if (!event) {
@@ -90,6 +116,6 @@ export class EventService {
       where: { id },
     });
 
-    return { message: 'Event deleted successfully' };
+    return { message: 'Event permanently deleted successfully' };
   }
 } 

@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res } from '@nestjs/common';
+import { Controller, Post, Body, Res, Get, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   RegisterDto,
@@ -8,6 +8,8 @@ import {
   VerifyOtpDto,
 } from './dto/auth.dto';
 import { Response } from 'express';
+import { RolesGuard } from './guards/roles.guard';
+import { BaseResponse } from '../common/interfaces/base-response.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -26,6 +28,15 @@ export class AuthController {
   @Post('logout')
   logout(@Res({ passthrough: true }) res: Response) {
     return this.authService.logout(res);
+  }
+
+  @Get('status')
+  @UseGuards(RolesGuard)
+  getStatus(): BaseResponse {
+    return {
+      status: true,
+      message: 'Logged'
+    };
   }
 
   @Post('forgot-password')

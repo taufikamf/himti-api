@@ -5,13 +5,18 @@ import { UpdateGalleryDto } from './dto/update-gallery.dto';
 import { PaginationService } from '../common/services/pagination.service';
 import { PaginationQueryDto } from '../common/dto/pagination.dto';
 import { PaginatedResponse } from '../common/interfaces/paginated-response.interface';
+import { SoftDeleteService } from '../common/services/soft-delete.service';
 
 @Injectable()
-export class GalleryService {
+export class GalleryService extends SoftDeleteService<any> {
+  protected model = 'gallery';
+
   constructor(
-    private readonly prisma: PrismaService,
-    private readonly paginationService: PaginationService,
-  ) {}
+    protected readonly prisma: PrismaService,
+    protected readonly paginationService: PaginationService,
+  ) {
+    super(prisma, paginationService);
+  }
 
   async create(dto: CreateGalleryDto) {
     return this.prisma.gallery.create({
@@ -34,11 +39,18 @@ export class GalleryService {
       this.prisma.event.findMany({
         skip,
         take,
+        where: {
+          deletedAt: null,
+        },
         orderBy: {
           name: 'asc',
-      },
+        },
       }),
-      this.prisma.event.count(),
+      this.prisma.event.count({
+        where: {
+          deletedAt: null,
+        },
+      }),
     ]);
 
     // For each event, get up to 4 gallery items
@@ -47,6 +59,7 @@ export class GalleryService {
         const galleryItems = await this.prisma.gallery.findMany({
           where: {
             event_id: event.id,
+            deletedAt: null,
           },
           take: 4, // Limit to 4 items per event
           orderBy: {
@@ -60,6 +73,7 @@ export class GalleryService {
           total_gallery_items: await this.prisma.gallery.count({
             where: {
               event_id: event.id,
+              deletedAt: null,
             },
           }),
         };
@@ -71,7 +85,10 @@ export class GalleryService {
 
   async findOne(id: string) {
     const gallery = await this.prisma.gallery.findUnique({
-      where: { id },
+      where: { 
+        id,
+        deletedAt: null,
+      },
       include: {
         event: true,
       },
@@ -86,7 +103,10 @@ export class GalleryService {
 
   async findByEvent(eventId: string) {
     const event = await this.prisma.event.findUnique({
-      where: { id: eventId },
+      where: { 
+        id: eventId,
+        deletedAt: null,
+      },
     });
 
     if (!event) {
@@ -96,6 +116,7 @@ export class GalleryService {
     const galleryItems = await this.prisma.gallery.findMany({
       where: {
         event_id: eventId,
+        deletedAt: null,
       },
       orderBy: {
         id: 'desc',
@@ -110,7 +131,10 @@ export class GalleryService {
 
   async update(id: string, dto: UpdateGalleryDto) {
     const gallery = await this.prisma.gallery.findUnique({
-      where: { id },
+      where: { 
+        id,
+        deletedAt: null,
+      },
     });
 
     if (!gallery) {
@@ -142,6 +166,6 @@ export class GalleryService {
       where: { id },
     });
 
-    return { message: 'Gallery deleted successfully' };
+    return { message: 'Gallery permanently deleted successfully' };
   }
 } 

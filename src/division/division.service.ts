@@ -5,13 +5,18 @@ import { UpdateDivisionDto } from './dto/update-division.dto';
 import { PaginationService } from '../common/services/pagination.service';
 import { PaginationQueryDto } from '../common/dto/pagination.dto';
 import { PaginatedResponse } from '../common/interfaces/paginated-response.interface';
+import { SoftDeleteService } from '../common/services/soft-delete.service';
 
 @Injectable()
-export class DivisionService {
+export class DivisionService extends SoftDeleteService<any> {
+  protected model = 'division';
+
   constructor(
-    private readonly prisma: PrismaService,
-    private readonly paginationService: PaginationService,
-  ) {}
+    protected readonly prisma: PrismaService,
+    protected readonly paginationService: PaginationService,
+  ) {
+    super(prisma, paginationService);
+  }
 
   /**
    * Creates a slug from a division name
@@ -51,12 +56,19 @@ export class DivisionService {
       this.prisma.division.findMany({
         skip,
         take,
+        where: {
+          deletedAt: null,
+        },
         include: {
           department: true,
           members: true,
         },
       }),
-      this.prisma.division.count(),
+      this.prisma.division.count({
+        where: {
+          deletedAt: null,
+        },
+      }),
     ]);
 
     return this.paginationService.createPaginationObject(items, totalItems, paginationQuery);
@@ -64,7 +76,10 @@ export class DivisionService {
 
   async findOne(id: string) {
     const division = await this.prisma.division.findUnique({
-      where: { id },
+      where: { 
+        id,
+        deletedAt: null,
+      },
       include: {
         department: true,
         members: true,
@@ -80,7 +95,10 @@ export class DivisionService {
 
   async findBySlug(slug: string) {
     const division = await this.prisma.division.findFirst({
-      where: { slug },
+      where: { 
+        slug,
+        deletedAt: null,
+      },
       include: {
         department: true,
         members: true,
@@ -96,7 +114,10 @@ export class DivisionService {
 
   async update(id: string, dto: UpdateDivisionDto) {
     const division = await this.prisma.division.findUnique({
-      where: { id },
+      where: { 
+        id,
+        deletedAt: null,
+      },
     });
 
     if (!division) {
@@ -139,6 +160,6 @@ export class DivisionService {
       where: { id },
     });
 
-    return { message: 'Division deleted successfully' };
+    return { message: 'Division permanently deleted successfully' };
   }
 } 

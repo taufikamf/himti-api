@@ -10,13 +10,18 @@ import { ForumStatus } from '@prisma/client';
 import { PaginationService } from '../common/services/pagination.service';
 import { PaginationQueryDto } from '../common/dto/pagination.dto';
 import { PaginatedResponse } from '../common/interfaces/paginated-response.interface';
+import { SoftDeleteService } from '../common/services/soft-delete.service';
 
 @Injectable()
-export class ForumService {
+export class ForumService extends SoftDeleteService<any> {
+  protected model = 'forum';
+
   constructor(
-    private prisma: PrismaService,
-    private paginationService: PaginationService,
-  ) {}
+    protected prisma: PrismaService,
+    protected paginationService: PaginationService,
+  ) {
+    super(prisma, paginationService);
+  }
 
   async create(createForumDto: CreateForumDto, userId: string) {
     return this.prisma.forum.create({
@@ -49,6 +54,7 @@ export class ForumService {
       this.prisma.forum.findMany({
         where: {
           status: status || ForumStatus.PUBLISHED,
+          deletedAt: null,
         },
         skip,
         take,
@@ -84,6 +90,7 @@ export class ForumService {
       this.prisma.forum.count({
         where: {
           status: status || ForumStatus.PUBLISHED,
+          deletedAt: null,
         },
       }),
     ]);
@@ -114,6 +121,7 @@ export class ForumService {
       this.prisma.forum.findMany({
         where: {
           author_id: userId,
+          deletedAt: null,
         },
         skip,
         take,
@@ -145,6 +153,7 @@ export class ForumService {
       this.prisma.forum.count({
         where: {
           author_id: userId,
+          deletedAt: null,
         },
       }),
     ]);
@@ -166,7 +175,10 @@ export class ForumService {
 
   async findOne(id: string, userId?: string) {
     const forum = await this.prisma.forum.findUnique({
-      where: { id },
+      where: {
+        id,
+        deletedAt: null,
+      },
       include: {
         author: {
           select: {
@@ -230,7 +242,10 @@ export class ForumService {
 
   async update(id: string, updateForumDto: UpdateForumDto, userId: string) {
     const forum = await this.prisma.forum.findUnique({
-      where: { id },
+      where: {
+        id,
+        deletedAt: null,
+      },
     });
 
     if (!forum) {
@@ -263,7 +278,10 @@ export class ForumService {
 
   async updateStatus(id: string, status: ForumStatus, adminId: string) {
     const forum = await this.prisma.forum.findUnique({
-      where: { id },
+      where: {
+        id,
+        deletedAt: null,
+      },
     });
 
     if (!forum) {
@@ -272,7 +290,9 @@ export class ForumService {
 
     return this.prisma.forum.update({
       where: { id },
-      data: { status },
+      data: {
+        status,
+      },
       include: {
         author: {
           select: {
@@ -284,6 +304,36 @@ export class ForumService {
         },
       },
     });
+  }
+
+  async softRemove(id: string, userId?: string): Promise<{ message: string }> {
+    if (!userId) {
+      return super.softRemove(id);
+    }
+
+    const forum = await this.prisma.forum.findUnique({
+      where: {
+        id,
+        deletedAt: null,
+      },
+    });
+
+    if (!forum) {
+      throw new NotFoundException('Forum not found');
+    }
+
+    if (forum.author_id !== userId) {
+      throw new UnauthorizedException('You can only delete your own forums');
+    }
+
+    await this.prisma.forum.update({
+      where: { id },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+
+    return { message: 'Forum soft deleted successfully' };
   }
 
   async remove(id: string, userId: string) {
@@ -299,14 +349,51 @@ export class ForumService {
       throw new UnauthorizedException('You can only delete your own forums');
     }
 
-    return this.prisma.forum.delete({
+    await this.prisma.forum.delete({
       where: { id },
     });
+
+    return { message: 'Forum permanently deleted successfully' };
+  }
+
+  async restore(id: string, userId?: string): Promise<{ message: string }> {
+    if (!userId) {
+      return super.restore(id);
+    }
+
+    const forum = await this.prisma.forum.findUnique({
+      where: {
+        id,
+        deletedAt: {
+          not: null,
+        },
+      },
+    });
+
+    if (!forum) {
+      throw new NotFoundException('Deleted forum not found');
+    }
+
+    if (forum.author_id !== userId) {
+      throw new UnauthorizedException('You can only restore your own forums');
+    }
+
+    await this.prisma.forum.update({
+      where: { id },
+      data: {
+        deletedAt: null,
+      },
+    });
+
+    return { message: 'Forum restored successfully' };
   }
 
   async like(id: string, userId: string) {
     const forum = await this.prisma.forum.findUnique({
-      where: { id },
+      where: {
+        id,
+        deletedAt: null,
+      },
     });
 
     if (!forum) {
@@ -314,9 +401,10 @@ export class ForumService {
     }
 
     if (forum.status !== ForumStatus.PUBLISHED) {
-      throw new UnauthorizedException('Can only like published forums');
+      throw new NotFoundException('Forum not found or not published');
     }
 
+    // Check if the user has already liked the forum
     const existingLike = await this.prisma.forumLike.findUnique({
       where: {
         forum_id_user_id: {
@@ -327,30 +415,31 @@ export class ForumService {
     });
 
     if (existingLike) {
+      // If like exists, remove it (unlike)
       await this.prisma.forumLike.delete({
         where: {
-          forum_id_user_id: {
-            forum_id: id,
-            user_id: userId,
-          },
+          id: existingLike.id,
         },
       });
-      return { message: 'Forum unliked successfully' };
+      return { liked: false };
+    } else {
+      // If like doesn't exist, create it (like)
+      await this.prisma.forumLike.create({
+        data: {
+          forum_id: id,
+          user_id: userId,
+        },
+      });
+      return { liked: true };
     }
-
-    await this.prisma.forumLike.create({
-      data: {
-        forum_id: id,
-        user_id: userId,
-      },
-    });
-
-    return { message: 'Forum liked successfully' };
   }
 
   async comment(id: string, comment: string, userId: string) {
     const forum = await this.prisma.forum.findUnique({
-      where: { id },
+      where: {
+        id,
+        deletedAt: null,
+      },
     });
 
     if (!forum) {
@@ -358,10 +447,10 @@ export class ForumService {
     }
 
     if (forum.status !== ForumStatus.PUBLISHED) {
-      throw new UnauthorizedException('Can only comment on published forums');
+      throw new NotFoundException('Forum not found or not published');
     }
 
-    return this.prisma.forumComment.create({
+    const newComment = await this.prisma.forumComment.create({
       data: {
         forum_id: id,
         user_id: userId,
@@ -378,5 +467,7 @@ export class ForumService {
         },
       },
     });
+
+    return newComment;
   }
 }

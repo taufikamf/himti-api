@@ -1,0 +1,740 @@
+{
+  "info": {
+    "name": "HIMTI API - Part 3",
+    "description": "API collection for HIMTI API - Member, Division, and Department endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Member",
+      "item": [
+        {
+          "name": "Create Member",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"division_id\": \"division-id-here\",\n    \"name\": \"Member Name\",\n    \"photo\": \"https://example.com/photo.jpg\",\n    \"position\": \"Member Position\",\n    \"role\": \"STAFF\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/members",
+              "host": ["{{baseUrl}}"],
+              "path": ["members"]
+            },
+            "description": "Create a new member (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Members",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/members?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["members"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all members (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Deleted Members",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/members/deleted?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["members", "deleted"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all soft-deleted members (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Member by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/members/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["members", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "member-id-here"
+                }
+              ]
+            },
+            "description": "Get a specific member by ID (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Member",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"division_id\": \"updated-division-id\",\n    \"name\": \"Updated Member Name\",\n    \"photo\": \"https://example.com/updated-photo.jpg\",\n    \"position\": \"Updated Position\",\n    \"role\": \"LEAD\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/members/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["members", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "member-id-here"
+                }
+              ]
+            },
+            "description": "Update a member (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Soft Delete Member",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/members/:id/soft",
+              "host": ["{{baseUrl}}"],
+              "path": ["members", ":id", "soft"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "member-id-here"
+                }
+              ]
+            },
+            "description": "Soft delete a member (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Permanent Delete Member",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/members/:id/permanent",
+              "host": ["{{baseUrl}}"],
+              "path": ["members", ":id", "permanent"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "member-id-here"
+                }
+              ]
+            },
+            "description": "Permanently delete a member (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Restore Member",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/members/:id/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["members", ":id", "restore"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "member-id-here"
+                }
+              ]
+            },
+            "description": "Restore a soft-deleted member (Admin and Super Admin only)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Division",
+      "item": [
+        {
+          "name": "Create Division",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"department_id\": \"department-id-here\",\n    \"division\": \"Division Name\",\n    \"slug\": \"division-slug\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/divisions",
+              "host": ["{{baseUrl}}"],
+              "path": ["divisions"]
+            },
+            "description": "Create a new division (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Divisions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/divisions?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["divisions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all divisions (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Deleted Divisions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/divisions/deleted?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["divisions", "deleted"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all soft-deleted divisions (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Division by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/divisions/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["divisions", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "division-id-here"
+                }
+              ]
+            },
+            "description": "Get a specific division by ID (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Division by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/divisions/slug/:slug",
+              "host": ["{{baseUrl}}"],
+              "path": ["divisions", "slug", ":slug"],
+              "variable": [
+                {
+                  "key": "slug",
+                  "value": "division-slug"
+                }
+              ]
+            },
+            "description": "Get a specific division by slug (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Division",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"department_id\": \"updated-department-id\",\n    \"division\": \"Updated Division Name\",\n    \"slug\": \"updated-division-slug\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/divisions/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["divisions", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "division-id-here"
+                }
+              ]
+            },
+            "description": "Update a division (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Soft Delete Division",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/divisions/:id/soft",
+              "host": ["{{baseUrl}}"],
+              "path": ["divisions", ":id", "soft"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "division-id-here"
+                }
+              ]
+            },
+            "description": "Soft delete a division (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Permanent Delete Division",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/divisions/:id/permanent",
+              "host": ["{{baseUrl}}"],
+              "path": ["divisions", ":id", "permanent"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "division-id-here"
+                }
+              ]
+            },
+            "description": "Permanently delete a division (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Restore Division",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/divisions/:id/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["divisions", ":id", "restore"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "division-id-here"
+                }
+              ]
+            },
+            "description": "Restore a soft-deleted division (Admin and Super Admin only)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Department",
+      "item": [
+        {
+          "name": "Create Department",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"department\": \"Department Name\",\n    \"slug\": \"department-slug\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/departments",
+              "host": ["{{baseUrl}}"],
+              "path": ["departments"]
+            },
+            "description": "Create a new department (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Departments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/departments?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["departments"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all departments (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Deleted Departments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/departments/deleted?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["departments", "deleted"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all soft-deleted departments (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Department by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/departments/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["departments", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "department-id-here"
+                }
+              ]
+            },
+            "description": "Get a specific department by ID (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Department by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/departments/slug/:slug",
+              "host": ["{{baseUrl}}"],
+              "path": ["departments", "slug", ":slug"],
+              "variable": [
+                {
+                  "key": "slug",
+                  "value": "department-slug"
+                }
+              ]
+            },
+            "description": "Get a specific department by slug (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Department",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"department\": \"Updated Department Name\",\n    \"slug\": \"updated-department-slug\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/departments/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["departments", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "department-id-here"
+                }
+              ]
+            },
+            "description": "Update a department (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Soft Delete Department",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/departments/:id/soft",
+              "host": ["{{baseUrl}}"],
+              "path": ["departments", ":id", "soft"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "department-id-here"
+                }
+              ]
+            },
+            "description": "Soft delete a department (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Permanent Delete Department",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/departments/:id/permanent",
+              "host": ["{{baseUrl}}"],
+              "path": ["departments", ":id", "permanent"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "department-id-here"
+                }
+              ]
+            },
+            "description": "Permanently delete a department (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Restore Department",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/departments/:id/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["departments", ":id", "restore"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "department-id-here"
+                }
+              ]
+            },
+            "description": "Restore a soft-deleted department (Admin and Super Admin only)"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "your-auth-token-here",
+      "type": "string"
+    }
+  ]
+} 

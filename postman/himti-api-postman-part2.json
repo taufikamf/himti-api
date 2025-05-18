@@ -1,0 +1,499 @@
+{
+  "info": {
+    "name": "HIMTI API - Part 2",
+    "description": "API collection for HIMTI API - Gallery and Event endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Gallery",
+      "item": [
+        {
+          "name": "Create Gallery",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"event_id\": \"event-id-here\",\n    \"photo_url\": \"https://example.com/photo.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/galleries",
+              "host": ["{{baseUrl}}"],
+              "path": ["galleries"]
+            },
+            "description": "Create a new gallery item (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Galleries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/galleries?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["galleries"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all galleries (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Deleted Galleries",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/galleries/deleted?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["galleries", "deleted"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all soft-deleted galleries (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Gallery by Event",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/galleries/event/:eventId",
+              "host": ["{{baseUrl}}"],
+              "path": ["galleries", "event", ":eventId"],
+              "variable": [
+                {
+                  "key": "eventId",
+                  "value": "event-id-here"
+                }
+              ]
+            },
+            "description": "Get all galleries for a specific event (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Gallery by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/galleries/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["galleries", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "gallery-id-here"
+                }
+              ]
+            },
+            "description": "Get a specific gallery by ID (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Gallery",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"event_id\": \"updated-event-id\",\n    \"photo_url\": \"https://example.com/updated-photo.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/galleries/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["galleries", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "gallery-id-here"
+                }
+              ]
+            },
+            "description": "Update a gallery (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Soft Delete Gallery",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/galleries/:id/soft",
+              "host": ["{{baseUrl}}"],
+              "path": ["galleries", ":id", "soft"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "gallery-id-here"
+                }
+              ]
+            },
+            "description": "Soft delete a gallery (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Permanent Delete Gallery",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/galleries/:id/permanent",
+              "host": ["{{baseUrl}}"],
+              "path": ["galleries", ":id", "permanent"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "gallery-id-here"
+                }
+              ]
+            },
+            "description": "Permanently delete a gallery (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Restore Gallery",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/galleries/:id/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["galleries", ":id", "restore"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "gallery-id-here"
+                }
+              ]
+            },
+            "description": "Restore a soft-deleted gallery (Admin and Super Admin only)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Event",
+      "item": [
+        {
+          "name": "Create Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Event Name\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/events",
+              "host": ["{{baseUrl}}"],
+              "path": ["events"]
+            },
+            "description": "Create a new event (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/events?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["events"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all events (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Deleted Events",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/events/deleted?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["events", "deleted"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all soft-deleted events (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Event by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/events/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["events", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "event-id-here"
+                }
+              ]
+            },
+            "description": "Get a specific event by ID (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Event",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Updated Event Name\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/events/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["events", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "event-id-here"
+                }
+              ]
+            },
+            "description": "Update an event (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Soft Delete Event",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/events/:id/soft",
+              "host": ["{{baseUrl}}"],
+              "path": ["events", ":id", "soft"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "event-id-here"
+                }
+              ]
+            },
+            "description": "Soft delete an event (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Permanent Delete Event",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/events/:id/permanent",
+              "host": ["{{baseUrl}}"],
+              "path": ["events", ":id", "permanent"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "event-id-here"
+                }
+              ]
+            },
+            "description": "Permanently delete an event (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Restore Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/events/:id/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["events", ":id", "restore"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "event-id-here"
+                }
+              ]
+            },
+            "description": "Restore a soft-deleted event (Admin and Super Admin only)"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "your-auth-token-here",
+      "type": "string"
+    }
+  ]
+} 

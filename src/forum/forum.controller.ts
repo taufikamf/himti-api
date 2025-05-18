@@ -42,6 +42,13 @@ export class ForumController {
     return this.forumService.findAll(forumQuery, forumQuery.status, userId);
   }
 
+  @Get('deleted')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  findAllDeleted(@Query() paginationQuery: PaginationQueryDto) {
+    return this.forumService.findAllDeleted(paginationQuery);
+  }
+
   @Get('my-forums')
   @UseGuards(RolesGuard)
   findMyForums(
@@ -81,10 +88,24 @@ export class ForumController {
     return this.forumService.updateStatus(id, status, user.id);
   }
 
-  @Delete(':id')
+  @Delete(':id/soft')
   @UseGuards(RolesGuard)
+  softRemove(@Param('id') id: string, @CurrentUser() user) {
+    return this.forumService.softRemove(id, user.id);
+  }
+
+  @Delete(':id/permanent')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   remove(@Param('id') id: string, @CurrentUser() user) {
     return this.forumService.remove(id, user.id);
+  }
+
+  @Post(':id/restore')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  restore(@Param('id') id: string, @CurrentUser() user) {
+    return this.forumService.restore(id, user.id);
   }
 
   @Public()

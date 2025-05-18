@@ -5,13 +5,18 @@ import { UpdateMemberDto } from './dto/update-member.dto';
 import { PaginationService } from '../common/services/pagination.service';
 import { PaginationQueryDto } from '../common/dto/pagination.dto';
 import { PaginatedResponse } from '../common/interfaces/paginated-response.interface';
+import { SoftDeleteService } from '../common/services/soft-delete.service';
 
 @Injectable()
-export class MemberService {
+export class MemberService extends SoftDeleteService<any> {
+  protected model = 'member';
+
   constructor(
-    private readonly prisma: PrismaService,
-    private readonly paginationService: PaginationService,
-  ) {}
+    protected readonly prisma: PrismaService,
+    protected readonly paginationService: PaginationService,
+  ) {
+    super(prisma, paginationService);
+  }
 
   async create(dto: CreateMemberDto) {
     const member = await this.prisma.member.create({
@@ -37,6 +42,9 @@ export class MemberService {
       this.prisma.member.findMany({
         skip,
         take,
+        where: {
+          deletedAt: null,
+        },
         include: {
           division: {
             include: {
@@ -45,7 +53,11 @@ export class MemberService {
           },
         },
       }),
-      this.prisma.member.count(),
+      this.prisma.member.count({
+        where: {
+          deletedAt: null,
+        },
+      }),
     ]);
 
     return this.paginationService.createPaginationObject(items, totalItems, paginationQuery);
@@ -53,7 +65,10 @@ export class MemberService {
 
   async findOne(id: string) {
     const member = await this.prisma.member.findUnique({
-      where: { id },
+      where: { 
+        id,
+        deletedAt: null,
+      },
       include: {
         division: {
           include: {
@@ -72,7 +87,10 @@ export class MemberService {
 
   async update(id: string, dto: UpdateMemberDto) {
     const member = await this.prisma.member.findUnique({
-      where: { id },
+      where: { 
+        id,
+        deletedAt: null,
+      },
     });
 
     if (!member) {
@@ -111,6 +129,6 @@ export class MemberService {
       where: { id },
     });
 
-    return { message: 'Member deleted successfully' };
+    return { message: 'Member permanently deleted successfully' };
   }
 } 

@@ -45,6 +45,13 @@ export class ArticleController {
     return this.articleService.findAll(paginationQuery, userId);
   }
 
+  @Get('deleted')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  findAllDeleted(@Query() paginationQuery: PaginationQueryDto) {
+    return this.articleService.findAllDeleted(paginationQuery);
+  }
+
   @Public()
   @UseGuards(PublicGuard)
   @Get('debug/:id')
@@ -115,11 +122,25 @@ export class ArticleController {
     return this.articleService.update(id, updateArticleDto, user.id);
   }
 
-  @Delete(':id')
+  @Delete(':id/soft')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  softRemove(@Param('id') id: string, @CurrentUser() user) {
+    return this.articleService.softRemove(id, user.id);
+  }
+
+  @Delete(':id/permanent')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   remove(@Param('id') id: string, @CurrentUser() user) {
     return this.articleService.remove(id, user.id);
+  }
+
+  @Post(':id/restore')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  restore(@Param('id') id: string, @CurrentUser() user) {
+    return this.articleService.restore(id, user.id);
   }
 
   @Public()

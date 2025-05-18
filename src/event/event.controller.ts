@@ -37,6 +37,13 @@ export class EventController {
     return this.eventService.findAll(paginationQuery);
   }
 
+  @Get('deleted')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  findAllDeleted(@Query() paginationQuery: PaginationQueryDto) {
+    return this.eventService.findAllDeleted(paginationQuery);
+  }
+
   @Public()
   @UseGuards(PublicGuard)
   @Get(':id')
@@ -51,10 +58,24 @@ export class EventController {
     return this.eventService.update(id, updateEventDto);
   }
 
-  @Delete(':id')
+  @Delete(':id/soft')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  softRemove(@Param('id') id: string) {
+    return this.eventService.softRemove(id);
+  }
+
+  @Delete(':id/permanent')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   remove(@Param('id') id: string) {
     return this.eventService.remove(id);
+  }
+
+  @Post(':id/restore')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  restore(@Param('id') id: string) {
+    return this.eventService.restore(id);
   }
 } 

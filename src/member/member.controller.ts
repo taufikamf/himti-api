@@ -43,6 +43,13 @@ export class MemberController {
     return members;
   }
 
+  @Get('deleted')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  findAllDeleted(@Query() paginationQuery: PaginationQueryDto) {
+    return this.memberService.findAllDeleted(paginationQuery);
+  }
+
   @Public()
   @UseGuards(PublicGuard)
   @Get(':id')
@@ -57,10 +64,24 @@ export class MemberController {
     return this.memberService.update(id, updateMemberDto);
   }
 
-  @Delete(':id')
+  @Delete(':id/soft')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  softRemove(@Param('id') id: string) {
+    return this.memberService.softRemove(id);
+  }
+
+  @Delete(':id/permanent')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   remove(@Param('id') id: string) {
     return this.memberService.remove(id);
+  }
+
+  @Post(':id/restore')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  restore(@Param('id') id: string) {
+    return this.memberService.restore(id);
   }
 } 

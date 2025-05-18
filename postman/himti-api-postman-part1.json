@@ -1,0 +1,900 @@
+{
+  "info": {
+    "name": "HIMTI API - Part 1",
+    "description": "API collection for HIMTI API - User, Forum, Article endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all users (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Deleted Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/deleted?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "deleted"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all soft-deleted users (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "me"]
+            },
+            "description": "Get the current authenticated user's profile"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "user-id-here"
+                }
+              ]
+            },
+            "description": "Get a specific user by ID (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Updated Name\",\n    \"profile_picture\": \"https://example.com/profile.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "user-id-here"
+                }
+              ]
+            },
+            "description": "Update a user's profile (User can only update their own profile, Admin can update any)"
+          },
+          "response": []
+        },
+        {
+          "name": "Soft Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/:id/soft",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", ":id", "soft"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "user-id-here"
+                }
+              ]
+            },
+            "description": "Soft delete a user (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Permanent Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/:id/permanent",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", ":id", "permanent"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "user-id-here"
+                }
+              ]
+            },
+            "description": "Permanently delete a user (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Restore User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/:id/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", ":id", "restore"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "user-id-here"
+                }
+              ]
+            },
+            "description": "Restore a soft-deleted user (Admin and Super Admin only)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Forum",
+      "item": [
+        {
+          "name": "Create Forum",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Forum Title\",\n    \"content\": \"Forum content goes here...\",\n    \"thumbnail\": \"https://example.com/thumbnail.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/forums",
+              "host": ["{{baseUrl}}"],
+              "path": ["forums"]
+            },
+            "description": "Create a new forum post"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Forums",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/forums?page=1&limit=10&status=PUBLISHED",
+              "host": ["{{baseUrl}}"],
+              "path": ["forums"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "PUBLISHED",
+                  "description": "Optional: DRAFT, PUBLISHED, REJECTED"
+                }
+              ]
+            },
+            "description": "Get all published forums (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Deleted Forums",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/forums/deleted?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["forums", "deleted"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all soft-deleted forums (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Forums",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/forums/my-forums?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["forums", "my-forums"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all forums created by the authenticated user"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Forum by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/forums/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["forums", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "forum-id-here"
+                }
+              ]
+            },
+            "description": "Get a specific forum by ID (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Forum",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Updated Forum Title\",\n    \"content\": \"Updated forum content...\",\n    \"thumbnail\": \"https://example.com/updated-thumbnail.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/forums/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["forums", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "forum-id-here"
+                }
+              ]
+            },
+            "description": "Update a forum (only the author can update their own forums)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Forum Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"PUBLISHED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/forums/:id/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["forums", ":id", "status"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "forum-id-here"
+                }
+              ]
+            },
+            "description": "Update a forum's status (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Soft Delete Forum",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/forums/:id/soft",
+              "host": ["{{baseUrl}}"],
+              "path": ["forums", ":id", "soft"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "forum-id-here"
+                }
+              ]
+            },
+            "description": "Soft delete a forum (only the author can delete their own forums)"
+          },
+          "response": []
+        },
+        {
+          "name": "Permanent Delete Forum",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/forums/:id/permanent",
+              "host": ["{{baseUrl}}"],
+              "path": ["forums", ":id", "permanent"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "forum-id-here"
+                }
+              ]
+            },
+            "description": "Permanently delete a forum (Admin and Super Admin only, or the author)"
+          },
+          "response": []
+        },
+        {
+          "name": "Restore Forum",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/forums/:id/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["forums", ":id", "restore"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "forum-id-here"
+                }
+              ]
+            },
+            "description": "Restore a soft-deleted forum (Admin and Super Admin only, or the author)"
+          },
+          "response": []
+        },
+        {
+          "name": "Like Forum",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/forums/:id/like",
+              "host": ["{{baseUrl}}"],
+              "path": ["forums", ":id", "like"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "forum-id-here"
+                }
+              ]
+            },
+            "description": "Like or unlike a forum (toggles)"
+          },
+          "response": []
+        },
+        {
+          "name": "Comment on Forum",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"comment\": \"This is a comment on the forum.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/forums/:id/comment",
+              "host": ["{{baseUrl}}"],
+              "path": ["forums", ":id", "comment"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "forum-id-here"
+                }
+              ]
+            },
+            "description": "Add a comment to a forum"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Article",
+      "item": [
+        {
+          "name": "Create Article",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Article Title\",\n    \"content\": \"Article content goes here...\",\n    \"thumbnail\": \"https://example.com/thumbnail.jpg\",\n    \"author\": \"Author Name\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/articles",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles"]
+            },
+            "description": "Create a new article (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Articles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all articles (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Deleted Articles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/articles/deleted?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles", "deleted"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all soft-deleted articles (Admin and Super Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Article by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "article-id-here"
+                }
+              ]
+            },
+            "description": "Get a specific article by ID (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Article by ID (Robust)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles/robust/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles", "robust", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "article-id-here"
+                }
+              ]
+            },
+            "description": "Get a specific article by ID with fallback methods (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Debug Article",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles/debug/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles", "debug", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "article-id-here"
+                }
+              ]
+            },
+            "description": "Debug endpoint for article lookup (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Article",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Updated Article Title\",\n    \"content\": \"Updated article content...\",\n    \"thumbnail\": \"https://example.com/updated-thumbnail.jpg\",\n    \"author\": \"Updated Author Name\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/articles/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "article-id-here"
+                }
+              ]
+            },
+            "description": "Update an article (only the author can update their own articles)"
+          },
+          "response": []
+        },
+        {
+          "name": "Soft Delete Article",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/articles/:id/soft",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles", ":id", "soft"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "article-id-here"
+                }
+              ]
+            },
+            "description": "Soft delete an article (only the author can delete their own articles)"
+          },
+          "response": []
+        },
+        {
+          "name": "Permanent Delete Article",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/articles/:id/permanent",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles", ":id", "permanent"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "article-id-here"
+                }
+              ]
+            },
+            "description": "Permanently delete an article (Admin and Super Admin only, or the author)"
+          },
+          "response": []
+        },
+        {
+          "name": "Restore Article",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/articles/:id/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles", ":id", "restore"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "article-id-here"
+                }
+              ]
+            },
+            "description": "Restore a soft-deleted article (Admin and Super Admin only, or the author)"
+          },
+          "response": []
+        },
+        {
+          "name": "Like Article",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/articles/:id/like",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles", ":id", "like"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "article-id-here"
+                }
+              ]
+            },
+            "description": "Like or unlike an article (toggles)"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "your-auth-token-here",
+      "type": "string"
+    }
+  ]
+} 

@@ -43,6 +43,13 @@ export class DepartmentController {
     return departments;
   }
 
+  @Get('deleted')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  findAllDeleted(@Query() paginationQuery: PaginationQueryDto) {
+    return this.departmentService.findAllDeleted(paginationQuery);
+  }
+
   @Public()
   @UseGuards(PublicGuard)
   @Get('slug/:slug')
@@ -67,10 +74,24 @@ export class DepartmentController {
     return this.departmentService.update(id, updateDepartmentDto);
   }
 
-  @Delete(':id')
+  @Delete(':id/soft')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  softRemove(@Param('id') id: string) {
+    return this.departmentService.softRemove(id);
+  }
+
+  @Delete(':id/permanent')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   remove(@Param('id') id: string) {
     return this.departmentService.remove(id);
+  }
+
+  @Post(':id/restore')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  restore(@Param('id') id: string) {
+    return this.departmentService.restore(id);
   }
 }

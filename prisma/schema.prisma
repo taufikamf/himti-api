@@ -29,6 +29,7 @@ model User {
   otpExpiry       DateTime?
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
+  deletedAt       DateTime?
 
   @@map("t_user")
 }
@@ -47,6 +48,7 @@ model Member {
   photo       String?    @db.VarChar
   position    String     @db.VarChar
   role        MemberRole @default(STAFF)
+  deletedAt   DateTime?
 
   @@map("t_member")
 }
@@ -58,6 +60,7 @@ model Division {
   division      String      @db.VarChar
   slug          String?     @db.VarChar
   members       Member[]
+  deletedAt     DateTime?
 
   @@unique([division, department_id], name: "division_department_id")
   @@map("t_division")
@@ -68,23 +71,26 @@ model Department {
   department String     @db.VarChar
   slug       String?    @db.VarChar
   divisions  Division[]
+  deletedAt  DateTime?
 
   @@map("t_department")
 }
 
 model Event {
-  id      String    @id @default(uuid())
-  name    String    @db.VarChar
-  gallery Gallery[]
+  id        String    @id @default(uuid())
+  name      String    @db.VarChar
+  gallery   Gallery[]
+  deletedAt DateTime?
 
   @@map("t_event")
 }
 
 model Gallery {
-  id        String @id @default(uuid())
+  id        String    @id @default(uuid())
   event_id  String
-  event     Event  @relation(fields: [event_id], references: [id])
-  photo_url String @db.VarChar
+  event     Event     @relation(fields: [event_id], references: [id])
+  photo_url String    @db.VarChar
+  deletedAt DateTime?
 
   @@map("t_gallery")
 }
@@ -106,29 +112,32 @@ model Forum {
   status     ForumStatus    @default(DRAFT)
   likes      ForumLike[]
   comments   ForumComment[]
+  deletedAt  DateTime?
 
   @@map("t_forum")
 }
 
 model ForumLike {
-  id       String @id @default(uuid())
-  forum_id String
-  forum    Forum  @relation(fields: [forum_id], references: [id])
-  user_id  String
-  user     User   @relation(fields: [user_id], references: [id])
+  id        String    @id @default(uuid())
+  forum_id  String
+  forum     Forum     @relation(fields: [forum_id], references: [id])
+  user_id   String
+  user      User      @relation(fields: [user_id], references: [id])
+  deletedAt DateTime?
 
   @@unique([forum_id, user_id])
   @@map("t_forum_like")
 }
 
 model ForumComment {
-  id         String   @id @default(uuid())
+  id         String    @id @default(uuid())
   forum_id   String
-  forum      Forum    @relation(fields: [forum_id], references: [id])
+  forum      Forum     @relation(fields: [forum_id], references: [id])
   user_id    String
-  user       User     @relation(fields: [user_id], references: [id])
-  comments   String   @db.VarChar
-  created_at DateTime @default(now())
+  user       User      @relation(fields: [user_id], references: [id])
+  comments   String    @db.VarChar
+  created_at DateTime  @default(now())
+  deletedAt  DateTime?
 
   @@map("t_forum_comment")
 }
@@ -143,25 +152,28 @@ model Article {
   author_id  String
   user       User          @relation(fields: [author_id], references: [id])
   likes      ArticleLike[]
+  deletedAt  DateTime?
 
   @@map("t_article")
 }
 
 model ArticleLike {
-  id         String  @id @default(uuid())
+  id         String    @id @default(uuid())
   article_id String
-  article    Article @relation(fields: [article_id], references: [id])
+  article    Article   @relation(fields: [article_id], references: [id])
   user_id    String
-  user       User    @relation(fields: [user_id], references: [id])
+  user       User      @relation(fields: [user_id], references: [id])
+  deletedAt  DateTime?
 
   @@unique([article_id, user_id])
   @@map("t_article_like")
 }
 
 model BankData {
-  id    String @id @default(uuid())
-  title String @db.VarChar
-  link  String @db.VarChar
+  id        String    @id @default(uuid())
+  title     String    @db.VarChar
+  link      String    @db.VarChar
+  deletedAt DateTime?
 
   @@map("t_bank_data")
 }

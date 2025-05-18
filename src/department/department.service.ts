@@ -5,13 +5,18 @@ import { UpdateDepartmentDto } from './dto/update-department.dto';
 import { PaginationService } from '../common/services/pagination.service';
 import { PaginationQueryDto } from '../common/dto/pagination.dto';
 import { PaginatedResponse } from '../common/interfaces/paginated-response.interface';
+import { SoftDeleteService } from '../common/services/soft-delete.service';
 
 @Injectable()
-export class DepartmentService {
+export class DepartmentService extends SoftDeleteService<any> {
+  protected model = 'department';
+
   constructor(
-    private readonly prisma: PrismaService,
-    private readonly paginationService: PaginationService,
-  ) {}
+    protected readonly prisma: PrismaService,
+    protected readonly paginationService: PaginationService,
+  ) {
+    super(prisma, paginationService);
+  }
 
   /**
    * Creates a slug from a department name
@@ -54,6 +59,9 @@ export class DepartmentService {
       this.prisma.department.findMany({
         skip,
         take,
+        where: {
+          deletedAt: null,
+        },
         include: {
           divisions: {
             include: {
@@ -62,7 +70,11 @@ export class DepartmentService {
           },
         },
       }),
-      this.prisma.department.count(),
+      this.prisma.department.count({
+        where: {
+          deletedAt: null,
+        },
+      }),
     ]);
 
     return this.paginationService.createPaginationObject(items, totalItems, paginationQuery);
@@ -70,7 +82,10 @@ export class DepartmentService {
 
   async findOne(id: string) {
     const department = await this.prisma.department.findUnique({
-      where: { id },
+      where: { 
+        id,
+        deletedAt: null,
+      },
       include: {
         divisions: {
           include: {
@@ -89,7 +104,10 @@ export class DepartmentService {
 
   async findBySlug(slug: string) {
     const department = await this.prisma.department.findFirst({
-      where: { slug },
+      where: { 
+        slug,
+        deletedAt: null,
+      },
       include: {
         divisions: {
           include: {
@@ -108,7 +126,10 @@ export class DepartmentService {
 
   async update(id: string, dto: UpdateDepartmentDto) {
     const department = await this.prisma.department.findUnique({
-      where: { id },
+      where: { 
+        id,
+        deletedAt: null,
+      },
     });
 
     if (!department) {
@@ -148,6 +169,6 @@ export class DepartmentService {
       where: { id },
     });
 
-    return { message: 'Department deleted successfully' };
+    return { message: 'Department permanently deleted successfully' };
   }
 } 

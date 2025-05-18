@@ -37,6 +37,13 @@ export class GalleryController {
     return this.galleryService.findAll(paginationQuery);
   }
 
+  @Get('deleted')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  findAllDeleted(@Query() paginationQuery: PaginationQueryDto) {
+    return this.galleryService.findAllDeleted(paginationQuery);
+  }
+
   @Public()
   @UseGuards(PublicGuard)
   @Get('event/:eventId')
@@ -58,10 +65,24 @@ export class GalleryController {
     return this.galleryService.update(id, updateGalleryDto);
   }
 
-  @Delete(':id')
+  @Delete(':id/soft')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  softRemove(@Param('id') id: string) {
+    return this.galleryService.softRemove(id);
+  }
+
+  @Delete(':id/permanent')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   remove(@Param('id') id: string) {
     return this.galleryService.remove(id);
+  }
+
+  @Post(':id/restore')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  restore(@Param('id') id: string) {
+    return this.galleryService.restore(id);
   }
 }
