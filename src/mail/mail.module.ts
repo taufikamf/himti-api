@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { MailService } from './mail.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -22,6 +24,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         },
         defaults: {
           from: `"HIMTI UIN Jakarta" <${configService.get('MAIL_FROM')}>`,
+        },
+        template: {
+          dir: join(process.cwd(), 'dist/mail/templates'),
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
         },
       }),
       inject: [ConfigService],

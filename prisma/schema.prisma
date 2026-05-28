@@ -34,6 +34,18 @@ model User {
   @@map("t_user")
 }
 
+model Media {
+  id         String    @id @default(uuid())
+  url        String    @db.VarChar
+  filename   String    @db.VarChar
+  mimetype   String    @db.VarChar
+  size       Int
+  created_at DateTime  @default(now())
+  deletedAt  DateTime?
+
+  @@map("t_media")
+}
+
 enum MemberRole {
   LEAD
   SECRETARY
@@ -77,10 +89,11 @@ model Department {
 }
 
 model Event {
-  id        String    @id @default(uuid())
-  name      String    @db.VarChar
-  gallery   Gallery[]
-  deletedAt DateTime?
+  id          String    @id @default(uuid())
+  name        String    @db.VarChar
+  description String?   @db.VarChar
+  gallery     Gallery[]
+  deletedAt   DateTime?
 
   @@map("t_event")
 }
@@ -105,6 +118,7 @@ model Forum {
   id         String         @id @default(uuid())
   title      String         @db.VarChar
   thumbnail  String         @db.VarChar
+  slug       String         @unique @db.VarChar
   author_id  String
   author     User           @relation(fields: [author_id], references: [id])
   content    String         @db.VarChar
@@ -147,6 +161,7 @@ model Article {
   title      String        @db.VarChar
   content    String        @db.VarChar
   thumbnail  String        @db.VarChar
+  slug       String        @unique @db.VarChar
   author     String        @db.VarChar
   created_at DateTime      @default(now())
   author_id  String

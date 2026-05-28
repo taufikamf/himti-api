@@ -3,16 +3,15 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { CommonModule } from '../common/common.module';
 import { JwtModule } from '@nestjs/jwt';
+import { jwtConfig } from '../config/jwt.config';
+import { UserAdminController } from './user-admin.controller';
 
 @Module({
   imports: [
     CommonModule,
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: process.env.JWT_EXPIRATION },
-    }),
+    JwtModule.registerAsync(jwtConfig)
   ],
-  controllers: [UserController],
+  controllers: [UserController, UserAdminController],
   providers: [UserService],
   exports: [UserService],
 })

@@ -60,6 +60,15 @@ export class ForumController {
 
   @Public()
   @UseGuards(PublicGuard)
+  @Get('slug/:slug')
+  findOneBySlug(@Param('slug') slug: string, @Request() req) {
+    // For public endpoints, the user might not be authenticated
+    const userId = req.user?.id;
+    return this.forumService.findOneBySlug(slug, userId);
+  }
+
+  @Public()
+  @UseGuards(PublicGuard)
   @Get(':id')
   findOne(@Param('id') id: string, @Request() req) {
     // For public endpoints, the user might not be authenticated
@@ -80,12 +89,8 @@ export class ForumController {
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @UseGuards(RolesGuard)
   @Patch(':id/status')
-  updateStatus(
-    @Param('id') id: string,
-    @Body('status') status: ForumStatus,
-    @CurrentUser() user,
-  ) {
-    return this.forumService.updateStatus(id, status, user.id);
+  updateStatus(@Param('id') id: string, @Body('status') status: ForumStatus) {
+    return this.forumService.updateStatus(id, status);
   }
 
   @Delete(':id/soft')

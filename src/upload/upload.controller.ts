@@ -6,10 +6,18 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
   FileTypeValidator,
+  Get,
+  Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
-import { ApiTags, ApiConsumes, ApiBody, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiConsumes,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+} from '@nestjs/swagger';
 
 @ApiTags('Upload')
 @Controller('upload')
@@ -47,5 +55,12 @@ export class UploadController {
     file: Express.Multer.File,
   ) {
     return this.uploadService.uploadFile(file);
+  }
+
+  @Get('media/:id')
+  @ApiOperation({ summary: 'Get media by ID' })
+  @ApiParam({ name: 'id', description: 'Media ID' })
+  async getMediaById(@Param('id') id: string) {
+    return this.uploadService.getMediaById(id);
   }
 }

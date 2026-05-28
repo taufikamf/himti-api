@@ -54,39 +54,49 @@ export class ArticleController {
 
   @Public()
   @UseGuards(PublicGuard)
+  @Get('slug/:slug')
+  findOneBySlug(@Param('slug') slug: string, @Request() req) {
+    this.logger.debug(`Received request for article with slug: ${slug}`);
+    // For public endpoints, the user might not be authenticated
+    const userId = req.user?.id;
+    return this.articleService.findOneBySlug(slug, userId);
+  }
+
+  @Public()
+  @UseGuards(PublicGuard)
   @Get('debug/:id')
   async debugFindOne(@Param('id') id: string) {
     this.logger.debug(`Debug endpoint: Received article ID: ${id}`);
-    
+
     try {
       // Try a direct query to see if the article exists
       const article = await this.articleService['prisma'].article.findUnique({
         where: { id },
-        select: { id: true }
+        select: { id: true },
       });
-      
+
       this.logger.debug(`Debug result: ${article ? 'Found' : 'Not found'}`);
-      
+
       // Also get a list of all article IDs to compare
       const allArticles = await this.articleService['prisma'].article.findMany({
         select: { id: true },
-        take: 5 // Limit to 5 for brevity
+        take: 5, // Limit to 5 for brevity
       });
-      
-      const articleIds = allArticles.map(a => a.id);
+
+      const articleIds = allArticles.map((a) => a.id);
       this.logger.debug(`First 5 article IDs: ${articleIds.join(', ')}`);
-      
+
       return {
         searchedId: id,
         found: !!article,
         exactIdMatch: articleIds.includes(id),
-        sampleIds: articleIds
+        sampleIds: articleIds,
       };
     } catch (error) {
       this.logger.error(`Debug error: ${error.message}`, error.stack);
       return {
         error: error.message,
-        searchedId: id
+        searchedId: id,
       };
     }
   }
@@ -95,7 +105,9 @@ export class ArticleController {
   @UseGuards(PublicGuard)
   @Get('robust/:id')
   findOneRobust(@Param('id') id: string, @Request() req) {
-    this.logger.debug(`Received request for article with ID (robust endpoint): ${id}`);
+    this.logger.debug(
+      `Received request for article with ID (robust endpoint): ${id}`,
+    );
     // For public endpoints, the user might not be authenticated
     const userId = req.user?.id;
     return this.articleService.findOneRobust(id, userId);
@@ -152,4 +164,4 @@ export class ArticleController {
     }
     return this.articleService.like(id, req.user.id);
   }
-} 
+}

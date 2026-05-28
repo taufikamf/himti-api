@@ -1,14 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationService } from '../common/services/pagination.service';
 import { PaginationQueryDto } from '../common/dto/pagination.dto';
 import { PaginatedResponse } from '../common/interfaces/paginated-response.interface';
 import { SoftDeleteService } from '../common/services/soft-delete.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import * as bcrypt from 'bcrypt';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class UserService extends SoftDeleteService<any> {
   protected model = 'user';
+  protected searchFields = ['name', 'email'];
 
   constructor(
     protected readonly prisma: PrismaService,
@@ -17,17 +21,56 @@ export class UserService extends SoftDeleteService<any> {
     super(prisma, paginationService);
   }
 
+  async create(createUserDto: CreateUserDto) {
+    // Check if email already exists
+    const existingUser = await this.prisma.user.findUnique({
+      where: { email: createUserDto.email },
+    });
+
+    if (existingUser) {
+      throw new ConflictException('Email already exists');
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+
+    // Create the user
+    const user = await this.prisma.user.create({
+      data: {
+        email: createUserDto.email,
+        password: hashedPassword,
+        name: createUserDto.name,
+        role: createUserDto.role || Role.USER,
+        profile_picture: createUserDto.profile_picture,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        profile_picture: true,
+      },
+    });
+
+    return user;
+  }
+
   async findAll(paginationQuery: PaginationQueryDto): Promise<PaginatedResponse<any>> {
     const skip = this.paginationService.getPrismaSkip(paginationQuery);
     const take = this.paginationService.getPrismaLimit(paginationQuery);
+
+    const searchCondition = this.getSearchCondition(paginationQuery.search);
+    
+    const where = {
+      deletedAt: null,
+      ...searchCondition,
+    };
 
     const [items, totalItems] = await Promise.all([
       this.prisma.user.findMany({
         skip,
         take,
-        where: {
-          deletedAt: null,
-        },
+        where,
         select: {
           id: true,
           email: true,
@@ -37,9 +80,7 @@ export class UserService extends SoftDeleteService<any> {
         },
       }),
       this.prisma.user.count({
-        where: {
-          deletedAt: null,
-        },
+        where,
       }),
     ]);
 
@@ -50,15 +91,20 @@ export class UserService extends SoftDeleteService<any> {
     const skip = this.paginationService.getPrismaSkip(paginationQuery);
     const take = this.paginationService.getPrismaLimit(paginationQuery);
 
+    const searchCondition = this.getSearchCondition(paginationQuery.search);
+    
+    const where = {
+      deletedAt: {
+        not: null,
+      },
+      ...searchCondition,
+    };
+
     const [items, totalItems] = await Promise.all([
       this.prisma.user.findMany({
         skip,
         take,
-        where: {
-          deletedAt: {
-            not: null,
-          },
-        },
+        where,
         select: {
           id: true,
           email: true,
@@ -69,11 +115,7 @@ export class UserService extends SoftDeleteService<any> {
         },
       }),
       this.prisma.user.count({
-        where: {
-          deletedAt: {
-            not: null,
-          },
-        },
+        where,
       }),
     ]);
 

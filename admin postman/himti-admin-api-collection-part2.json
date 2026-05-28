@@ -1,0 +1,629 @@
+{
+  "info": {
+    "name": "HIMTI Admin API - Part 2",
+    "description": "Collection for HIMTI Admin API endpoints - Part 2",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Member Admin",
+      "item": [
+        {
+          "name": "Get All Members",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/members?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "members"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Get Deleted Members",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/members/deleted?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "members", "deleted"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Get Member By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/members/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "members", ":id"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Create Member",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/members",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "members"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user-id-here\",\n  \"divisionId\": \"division-id-here\",\n  \"position\": \"STAFF\",\n  \"year\": 2023\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Member",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/admin/members/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "members", ":id"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"position\": \"COORDINATOR\",\n  \"year\": 2023\n}"
+            }
+          }
+        },
+        {
+          "name": "Soft Delete Member",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/members/:id/soft",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "members", ":id", "soft"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Permanent Delete Member",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/members/:id/permanent",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "members", ":id", "permanent"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Restore Member",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/members/:id/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "members", ":id", "restore"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Forum Admin",
+      "item": [
+        {
+          "name": "Get All Forums",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/forums?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "forums"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Get Deleted Forums",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/forums/deleted?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "forums", "deleted"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Get Forum By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/forums/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "forums", ":id"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Create Forum",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/forums",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "forums"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"New Forum Topic\",\n  \"content\": \"Forum content goes here\",\n  \"isAnnouncement\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Forum",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/admin/forums/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "forums", ":id"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Forum Title\",\n  \"content\": \"Updated content\",\n  \"isAnnouncement\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Soft Delete Forum",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/forums/:id/soft",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "forums", ":id", "soft"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Permanent Delete Forum",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/forums/:id/permanent",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "forums", ":id", "permanent"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Restore Forum",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/forums/:id/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "forums", ":id", "restore"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Article Admin",
+      "item": [
+        {
+          "name": "Get All Articles",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/articles?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "articles"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Get Deleted Articles",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/articles/deleted?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "articles", "deleted"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Get Article By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/articles/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "articles", ":id"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Create Article",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/articles",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "articles"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"New Article\",\n  \"content\": \"Article content goes here\",\n  \"thumbnail\": \"thumbnail-url\",\n  \"tags\": [\"tag1\", \"tag2\"],\n  \"isPublished\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Article",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/admin/articles/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "articles", ":id"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Article Title\",\n  \"content\": \"Updated content\",\n  \"isPublished\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Soft Delete Article",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/articles/:id/soft",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "articles", ":id", "soft"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Permanent Delete Article",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/articles/:id/permanent",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "articles", ":id", "permanent"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Restore Article",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/articles/:id/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "articles", ":id", "restore"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Event Admin",
+      "item": [
+        {
+          "name": "Get All Events",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/events?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "events"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Get Deleted Events",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/events/deleted?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "events", "deleted"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Get Event By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/events/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "events", ":id"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Create Event",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/events",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "events"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"New Event\",\n  \"description\": \"Event description\",\n  \"date\": \"2023-12-01T10:00:00Z\",\n  \"location\": \"Event Location\",\n  \"thumbnail\": \"thumbnail-url\",\n  \"isPublished\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Event",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/admin/events/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "events", ":id"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Event Title\",\n  \"description\": \"Updated description\",\n  \"location\": \"Updated Location\",\n  \"isPublished\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Soft Delete Event",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/events/:id/soft",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "events", ":id", "soft"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Permanent Delete Event",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/events/:id/permanent",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "events", ":id", "permanent"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Restore Event",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/events/:id/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "events", ":id", "restore"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "your_jwt_token_here",
+      "type": "string"
+    }
+  ]
+} 

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class CreateForumDto {
   @IsString()
@@ -9,7 +9,7 @@ export class CreateForumDto {
   @IsNotEmpty()
   content: string;
 
-  @IsString()
+  @IsUUID()
   @IsNotEmpty()
-  thumbnail: string;
+  media_id: string;
 } 

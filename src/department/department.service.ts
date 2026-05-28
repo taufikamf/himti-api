@@ -10,6 +10,7 @@ import { SoftDeleteService } from '../common/services/soft-delete.service';
 @Injectable()
 export class DepartmentService extends SoftDeleteService<any> {
   protected model = 'department';
+  protected searchFields = ['department'];
 
   constructor(
     protected readonly prisma: PrismaService,
@@ -26,16 +27,16 @@ export class DepartmentService extends SoftDeleteService<any> {
   private createSlug(name: string): string {
     return name
       .toLowerCase()
-      .replace(/\s+/g, '-')     // Replace spaces with -
+      .replace(/\s+/g, '-') // Replace spaces with -
       .replace(/[^\w\-]+/g, '') // Remove all non-word chars
-      .replace(/\-\-+/g, '-')   // Replace multiple - with single -
-      .replace(/^-+/, '')       // Trim - from start of text
-      .replace(/-+$/, '');      // Trim - from end of text
+      .replace(/\-\-+/g, '-') // Replace multiple - with single -
+      .replace(/^-+/, '') // Trim - from start of text
+      .replace(/-+$/, ''); // Trim - from end of text
   }
 
   async create(dto: CreateDepartmentDto) {
     const slug = this.createSlug(dto.department);
-    
+
     return this.prisma.department.create({
       data: {
         department: dto.department,
@@ -51,17 +52,24 @@ export class DepartmentService extends SoftDeleteService<any> {
     });
   }
 
-  async findAll(paginationQuery: PaginationQueryDto): Promise<PaginatedResponse<any>> {
+  async findAll(
+    paginationQuery: PaginationQueryDto,
+  ): Promise<PaginatedResponse<any>> {
     const skip = this.paginationService.getPrismaSkip(paginationQuery);
     const take = this.paginationService.getPrismaLimit(paginationQuery);
+
+    const searchCondition = this.getSearchCondition(paginationQuery.search);
+
+    const where = {
+      deletedAt: null,
+      ...searchCondition,
+    };
 
     const [items, totalItems] = await Promise.all([
       this.prisma.department.findMany({
         skip,
         take,
-        where: {
-          deletedAt: null,
-        },
+        where,
         include: {
           divisions: {
             include: {
@@ -71,18 +79,20 @@ export class DepartmentService extends SoftDeleteService<any> {
         },
       }),
       this.prisma.department.count({
-        where: {
-          deletedAt: null,
-        },
+        where,
       }),
     ]);
 
-    return this.paginationService.createPaginationObject(items, totalItems, paginationQuery);
+    return this.paginationService.createPaginationObject(
+      items,
+      totalItems,
+      paginationQuery,
+    );
   }
 
   async findOne(id: string) {
     const department = await this.prisma.department.findUnique({
-      where: { 
+      where: {
         id,
         deletedAt: null,
       },
@@ -104,7 +114,7 @@ export class DepartmentService extends SoftDeleteService<any> {
 
   async findBySlug(slug: string) {
     const department = await this.prisma.department.findFirst({
-      where: { 
+      where: {
         slug,
         deletedAt: null,
       },
@@ -126,7 +136,7 @@ export class DepartmentService extends SoftDeleteService<any> {
 
   async update(id: string, dto: UpdateDepartmentDto) {
     const department = await this.prisma.department.findUnique({
-      where: { 
+      where: {
         id,
         deletedAt: null,
       },
@@ -171,4 +181,4 @@ export class DepartmentService extends SoftDeleteService<any> {
 
     return { message: 'Department permanently deleted successfully' };
   }
-} 
+}

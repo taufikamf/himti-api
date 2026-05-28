@@ -1,13 +1,14 @@
 import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
 import * as sharp from 'sharp';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UploadService {
   private readonly logger = new Logger(UploadService.name);
   private readonly THREE_MB_IN_BYTES = 3 * 1024 * 1024; // 3MB in bytes
 
-  constructor() {
+  constructor(private readonly prisma: PrismaService) {
     cloudinary.config({
       cloud_name: 'dppmsqwgi',
       api_key: '679814612734721',
@@ -53,10 +54,11 @@ export class UploadService {
 
   /**
    * Uploads a file to Cloudinary with rotation correction for images
+   * and stores the media information in the database
    * @param file The file to upload (from multer)
-   * @returns The Cloudinary upload response with the URL
+   * @returns The media_id of the uploaded file
    */
-  async uploadFile(file: Express.Multer.File): Promise<{ url: string }> {
+  async uploadFile(file: Express.Multer.File): Promise<{ media_id: string, url: string }> {
     if (!file) {
       throw new BadRequestException('No file uploaded');
     }
@@ -87,11 +89,39 @@ export class UploadService {
       // Upload to Cloudinary with orientation fix
       const result = await cloudinary.uploader.upload(dataURI, uploadOptions);
 
+      // Store media information in the database
+      const media = await this.prisma.media.create({
+        data: {
+          url: result.secure_url,
+          filename: file.originalname,
+          mimetype: file.mimetype,
+          size: file.size,
+        }
+      });
+
       return { 
-        url: result.secure_url 
+        media_id: media.id,
+        url: result.secure_url
       };
     } catch (error) {
       throw new BadRequestException(`Error uploading file: ${error.message}`);
     }
+  }
+
+  /**
+   * Get media by ID
+   * @param id Media ID
+   * @returns Media information
+   */
+  async getMediaById(id: string) {
+    const media = await this.prisma.media.findUnique({
+      where: { id }
+    });
+
+    if (!media) {
+      throw new BadRequestException('Media not found');
+    }
+
+    return media;
   }
 } 

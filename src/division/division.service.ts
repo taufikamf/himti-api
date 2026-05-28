@@ -10,6 +10,7 @@ import { SoftDeleteService } from '../common/services/soft-delete.service';
 @Injectable()
 export class DivisionService extends SoftDeleteService<any> {
   protected model = 'division';
+  protected searchFields = ['division'];
 
   constructor(
     protected readonly prisma: PrismaService,
@@ -52,22 +53,25 @@ export class DivisionService extends SoftDeleteService<any> {
     const skip = this.paginationService.getPrismaSkip(paginationQuery);
     const take = this.paginationService.getPrismaLimit(paginationQuery);
 
+    const searchCondition = this.getSearchCondition(paginationQuery.search);
+    
+    const where = {
+      deletedAt: null,
+      ...searchCondition,
+    };
+
     const [items, totalItems] = await Promise.all([
       this.prisma.division.findMany({
         skip,
         take,
-        where: {
-          deletedAt: null,
-        },
+        where,
         include: {
           department: true,
           members: true,
         },
       }),
       this.prisma.division.count({
-        where: {
-          deletedAt: null,
-        },
+        where,
       }),
     ]);
 

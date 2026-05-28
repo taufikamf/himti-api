@@ -1,5 +1,6 @@
 import { PrismaClient, Role, ForumStatus, MemberRole } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { generateSlug } from '../src/common/utils/slug.util';
 
 const prisma = new PrismaClient();
 const PLACEHOLDER_IMAGE = 'https://placehold.co/600x400/green/white.png?text=Hello+World';
@@ -179,6 +180,7 @@ async function main() {
         content: forum.content,
         status: forum.status,
         author_id: testUser.id,
+        slug: generateSlug(forum.title),
       },
     });
     console.log('Created forum:', createdForum.title);
@@ -226,6 +228,7 @@ async function main() {
         content: article.content,
         author: article.author,
         author_id: adminUser.id,
+        slug: generateSlug(article.title),
       },
     });
     console.log('Created article:', createdArticle.title);

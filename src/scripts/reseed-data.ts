@@ -1,8 +1,9 @@
 import { PrismaClient, Role, ForumStatus } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { generateSlug } from '../common/utils/slug.util';
 
 const prisma = new PrismaClient();
-const NEW_IMAGE_URL = 'https://placehold.co/600x400/green/white?text=Hello+World';
+const NEW_IMAGE_URL = 'https://res.cloudinary.com/dppmsqwgi/image/upload/v1715519414/himti-api/wepik-export-20240516130803xRHI_awhd6s.png';
 
 async function reseedData() {
   console.log('Starting data reseeding process...');
@@ -105,6 +106,7 @@ async function reseedData() {
           content: forum.content,
           status: forum.status,
           author_id: testUserId,
+          slug: generateSlug(forum.title),
         },
       });
       console.log('Created forum:', createdForum.title);
@@ -153,6 +155,7 @@ async function reseedData() {
           content: article.content,
           author: article.author,
           author_id: adminUserId,
+          slug: generateSlug(article.title),
         },
       });
       console.log('Created article:', createdArticle.title);

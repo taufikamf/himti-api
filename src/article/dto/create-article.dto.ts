@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class CreateArticleDto {
   @IsString()
@@ -9,11 +9,11 @@ export class CreateArticleDto {
   @IsNotEmpty()
   content: string;
 
-  @IsString()
+  @IsUUID()
   @IsNotEmpty()
-  thumbnail: string;
+  media_id: string;
 
   @IsString()
   @IsNotEmpty()
   author: string;
-} 
+}

@@ -1,0 +1,500 @@
+{
+  "info": {
+    "name": "HIMTI Admin API",
+    "description": "Collection for HIMTI Admin API endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Admin Login",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Admin",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/users?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Get Deleted Users",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/deleted?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", "deleted"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", ":id"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\",\n  \"name\": \"New User\",\n  \"role\": \"USER\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", ":id"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated User Name\",\n  \"role\": \"ADMIN\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Soft Delete User",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/:id/soft",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", ":id", "soft"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Permanent Delete User",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/:id/permanent",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", ":id", "permanent"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Restore User",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/:id/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", ":id", "restore"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Department Admin",
+      "item": [
+        {
+          "name": "Get All Departments",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/departments?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "departments"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Get Deleted Departments",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/departments/deleted?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "departments", "deleted"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Get Department By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/departments/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "departments", ":id"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Create Department",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/departments",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "departments"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Department\",\n  \"description\": \"Department description\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Department",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/admin/departments/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "departments", ":id"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Department Name\",\n  \"description\": \"Updated description\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Soft Delete Department",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/departments/:id/soft",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "departments", ":id", "soft"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Permanent Delete Department",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/departments/:id/permanent",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "departments", ":id", "permanent"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Restore Department",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/departments/:id/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "departments", ":id", "restore"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Division Admin",
+      "item": [
+        {
+          "name": "Get All Divisions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/divisions?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "divisions"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Get Deleted Divisions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/divisions/deleted?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "divisions", "deleted"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Get Division By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/divisions/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "divisions", ":id"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Create Division",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/divisions",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "divisions"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Division\",\n  \"description\": \"Division description\",\n  \"departmentId\": \"department-id-here\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Division",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/admin/divisions/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "divisions", ":id"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Division Name\",\n  \"description\": \"Updated description\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Soft Delete Division",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/divisions/:id/soft",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "divisions", ":id", "soft"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Permanent Delete Division",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/divisions/:id/permanent",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "divisions", ":id", "permanent"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Restore Division",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/divisions/:id/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "divisions", ":id", "restore"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "your_jwt_token_here",
+      "type": "string"
+    }
+  ]
+} 

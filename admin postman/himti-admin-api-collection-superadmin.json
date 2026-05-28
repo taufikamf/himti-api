@@ -1,0 +1,45 @@
+{
+  "info": {
+    "name": "HIMTI Admin API - Super Admin",
+    "description": "Collection for HIMTI Admin API Super Admin endpoint",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Super Admin",
+      "item": [
+        {
+          "name": "Create Super Admin",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/super-admin",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", "super-admin"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"superadmin@example.com\",\n  \"password\": \"password123\",\n  \"name\": \"Super Admin User\"\n}"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "your_jwt_token_here",
+      "type": "string"
+    }
+  ]
+} 

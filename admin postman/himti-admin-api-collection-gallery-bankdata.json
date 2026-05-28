@@ -1,0 +1,325 @@
+{
+  "info": {
+    "name": "HIMTI Admin API - Gallery and Bank Data",
+    "description": "Collection for HIMTI Admin API Gallery and Bank Data endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Gallery Admin",
+      "item": [
+        {
+          "name": "Get All Galleries",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/galleries?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "galleries"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Get Deleted Galleries",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/galleries/deleted?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "galleries", "deleted"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Get Gallery By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/galleries/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "galleries", ":id"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Create Gallery",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/galleries",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "galleries"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"New Gallery\",\n  \"description\": \"Gallery description\",\n  \"imageUrl\": \"https://example.com/image.jpg\",\n  \"isPublished\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Gallery",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/admin/galleries/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "galleries", ":id"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Gallery Title\",\n  \"description\": \"Updated description\",\n  \"isPublished\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Soft Delete Gallery",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/galleries/:id/soft",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "galleries", ":id", "soft"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Permanent Delete Gallery",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/galleries/:id/permanent",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "galleries", ":id", "permanent"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Restore Gallery",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/galleries/:id/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "galleries", ":id", "restore"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bank Data Admin",
+      "item": [
+        {
+          "name": "Get All Bank Data",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/bank-data?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "bank-data"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Get Deleted Bank Data",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/bank-data/deleted?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "bank-data", "deleted"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Get Bank Data By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/bank-data/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "bank-data", ":id"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Create Bank Data",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/bank-data",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "bank-data"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bankName\": \"BCA\",\n  \"accountNumber\": \"1234567890\",\n  \"accountName\": \"HIMTI UMN\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Bank Data",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/admin/bank-data/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "bank-data", ":id"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bankName\": \"BNI\",\n  \"accountNumber\": \"0987654321\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Soft Delete Bank Data",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/bank-data/:id/soft",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "bank-data", ":id", "soft"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Permanent Delete Bank Data",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/bank-data/:id/permanent",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "bank-data", ":id", "permanent"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        },
+        {
+          "name": "Restore Bank Data",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/bank-data/:id/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "bank-data", ":id", "restore"],
+              "variable": [
+                {"key": "id", "value": ""}
+              ]
+            },
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "your_jwt_token_here",
+      "type": "string"
+    }
+  ]
+} 

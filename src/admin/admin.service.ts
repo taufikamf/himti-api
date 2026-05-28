@@ -2,6 +2,8 @@ import { Injectable, BadRequestException, NotFoundException, ConflictException }
 import { PrismaService } from '../prisma/prisma.service';
 import { Role, ForumStatus } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { MailService } from '../mail/mail.service';
+import { generateSlug, ensureUniqueSlug } from '../common/utils/slug.util';
 import { 
   CreateUserDto, 
   UpdateUserDto,
@@ -25,7 +27,10 @@ import {
 
 @Injectable()
 export class AdminService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly mailService: MailService
+  ) {}
 
   // User Management
   private async hashPassword(password: string): Promise<string> {
@@ -43,23 +48,27 @@ export class AdminService {
 
     const hashedPassword = await this.hashPassword(dto.password);
 
-    return this.prisma.user.create({
+    const user = await this.prisma.user.create({
       data: {
         email: dto.email,
         password: hashedPassword,
         name: dto.name,
         role: Role.SUPER_ADMIN,
       },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        profile_picture: true,
-        createdAt: true,
-        updatedAt: true,
-      },
     });
+
+    // Send welcome email
+    await this.mailService.sendWelcomeEmail(user);
+
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      profile_picture: user.profile_picture,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
   }
 
   async createUser(dto: CreateUserDto) {
@@ -73,7 +82,7 @@ export class AdminService {
 
     const hashedPassword = await this.hashPassword(dto.password);
 
-    return this.prisma.user.create({
+    const user = await this.prisma.user.create({
       data: {
         email: dto.email,
         password: hashedPassword,
@@ -81,16 +90,20 @@ export class AdminService {
         role: dto.role || Role.USER,
         profile_picture: dto.profile_picture,
       },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        profile_picture: true,
-        createdAt: true,
-        updatedAt: true,
-      },
     });
+
+    // Send welcome email
+    await this.mailService.sendWelcomeEmail(user);
+
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      profile_picture: user.profile_picture,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
   }
 
   async findAllUsers() {
@@ -198,6 +211,15 @@ export class AdminService {
 
   // Forum Management
   async createForum(dto: CreateForumDto, adminId: string) {
+    // Generate slug from title
+    const baseSlug = generateSlug(dto.title);
+    const slug = await ensureUniqueSlug(baseSlug, async (slug) => {
+      const existingForum = await this.prisma.forum.findUnique({
+        where: { slug },
+      });
+      return !!existingForum;
+    });
+
     return this.prisma.forum.create({
       data: {
         title: dto.title,
@@ -205,6 +227,7 @@ export class AdminService {
         thumbnail: dto.thumbnail,
         author_id: adminId,
         status: ForumStatus.PUBLISHED,
+        slug,
       },
       include: {
         author: {
@@ -331,6 +354,15 @@ export class AdminService {
 
   // Article Management
   async createArticle(dto: CreateArticleDto, adminId: string) {
+    // Generate slug from title
+    const baseSlug = generateSlug(dto.title);
+    const slug = await ensureUniqueSlug(baseSlug, async (slug) => {
+      const existingArticle = await this.prisma.article.findUnique({
+        where: { slug },
+      });
+      return !!existingArticle;
+    });
+
     return this.prisma.article.create({
       data: {
         title: dto.title,
@@ -338,6 +370,7 @@ export class AdminService {
         thumbnail: dto.thumbnail,
         author: dto.author,
         author_id: adminId,
+        slug,
       },
       include: {
         user: {
